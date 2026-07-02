@@ -35,6 +35,8 @@ export interface JwtClaims {
   sub: string;
   email: string;
   role: UserRole;
+  /** null only for super_admin — every other account belongs to one school. */
+  schoolId: string | null;
   iat: number;
   exp: number;
 }
@@ -61,10 +63,82 @@ export interface User {
   email: string;
   phone?: string | null;
   role: UserRole;
+  schoolId?: string | null;
   isActive: boolean;
   lastLoginAt?: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+// ── Schools (SaaS console — super admin only) ─────────────
+export type SchoolStatus = 'active' | 'trial' | 'suspended' | 'inactive';
+
+export interface SchoolAddress {
+  line1?: string | null;
+  line2?: string | null;
+  city?: string | null;
+  state?: string | null;
+  postalCode?: string | null;
+  country?: string | null;
+}
+
+export interface School {
+  _id: string;
+  name: string;
+  code: string;
+  address?: SchoolAddress | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  status: SchoolStatus;
+  enabledModules: string[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  /** Present right after creation when the admin was invited (email not yet wired). */
+  adminInviteUrl?: string;
+}
+
+export interface SchoolStats {
+  total: number;
+  byStatus: Record<SchoolStatus, number>;
+}
+
+export interface SchoolOverview {
+  school: School;
+  students: number;
+  usersByRole: Partial<Record<UserRole, number>>;
+}
+
+/**
+ * The school IS its admin — creating a school bundles its admin account.
+ * No password: the admin is emailed a set-password invite link.
+ */
+export interface CreateSchoolInput {
+  name: string;
+  code?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  address?: SchoolAddress;
+  admin?: {
+    name: string;
+    email: string;
+    phone?: string;
+  };
+}
+
+/** No password: the user is emailed a set-password invite link. */
+export interface CreateUserInput {
+  name: string;
+  email: string;
+  phone?: string;
+  role: UserRole;
+  schoolId?: string;
+}
+
+/** Response of GET /auth/invite — who a set-password link belongs to. */
+export interface InviteInfo {
+  email: string;
+  name: string;
 }
 
 // ── Students ──────────────────────────────────────────────

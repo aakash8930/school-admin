@@ -2,8 +2,11 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
 import { LoginPage } from './pages/LoginPage';
+import { SetPasswordPage } from './pages/SetPasswordPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { UsersPage } from './pages/UsersPage';
+import { SchoolsPage } from './pages/schools/SchoolsPage';
+import { SchoolDetailPage } from './pages/schools/SchoolDetailPage';
 import { StudentsPage } from './pages/students/StudentsPage';
 import { ClassesPage } from './pages/classes/ClassesPage';
 import { AttendancePage } from './pages/attendance/AttendancePage';
@@ -19,10 +22,13 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/set-password" element={<SetPasswordPage />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
             <Route index element={<DashboardPage />} />
+            <Route path="schools" element={<SchoolsPage />} />
+            <Route path="schools/:id" element={<SchoolDetailPage />} />
             <Route path="students" element={<StudentsPage />} />
             <Route path="staff" element={<PlaceholderPage title="Staff" />} />
             <Route path="classes" element={<ClassesPage />} />

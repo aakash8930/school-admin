@@ -1,17 +1,11 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 
+// SaaS console nav: the web app is for the super admin only. Schools
+// (their admin accounts) manage day-to-day data through the school app.
 const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', end: true },
-  { to: '/admissions', label: 'Admissions' },
-  { to: '/students', label: 'Students' },
-  { to: '/staff', label: 'Staff' },
-  { to: '/classes', label: 'Classes' },
-  { to: '/fees', label: 'Fees' },
-  { to: '/attendance', label: 'Attendance' },
-  { to: '/daycare', label: 'Daycare' },
-  { to: '/academic', label: 'Academic' },
-  { to: '/communication', label: 'Communication' },
+  { to: '/schools', label: 'Schools' },
   { to: '/users', label: 'Users' },
 ];
 
@@ -28,7 +22,7 @@ export function Layout() {
     <div className="flex h-full bg-slate-50 text-slate-900">
       <aside className="flex w-60 flex-col border-r border-slate-200 bg-white">
         <div className="px-6 py-5 text-lg font-semibold tracking-tight">
-          School <span className="text-indigo-600">Admin</span>
+          Super <span className="text-indigo-600">Admin</span>
         </div>
         <nav className="flex-1 space-y-1 px-3">
           {NAV_ITEMS.map((item) => (

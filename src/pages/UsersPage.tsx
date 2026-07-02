@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { apiGet, errorMessage } from '../lib/api';
-import type { PaginatedResult, User } from '../lib/types';
+import type { PaginatedResult, School, User } from '../lib/types';
+import { UserForm } from './UserForm';
 
 export function UsersPage() {
   const [page, setPage] = useState(1);
+  const [showForm, setShowForm] = useState(false);
   const limit = 20;
 
   const { data, isLoading, isError, error, isFetching } = useQuery({
@@ -14,12 +16,33 @@ export function UsersPage() {
     placeholderData: keepPreviousData,
   });
 
+  // Map schoolId → school so each account shows which school it belongs to.
+  const { data: schools } = useQuery({
+    queryKey: ['schools', 'all'],
+    queryFn: () => apiGet<PaginatedResult<School>>('/schools?limit=100'),
+  });
+  const schoolById = useMemo(() => {
+    const map = new Map<string, School>();
+    for (const s of schools?.data ?? []) map.set(s._id, s);
+    return map;
+  }, [schools]);
+
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-slate-900">Users</h1>
-      <p className="mt-1 text-sm text-slate-500">
-        System accounts (staff, teachers, parents, admins).
-      </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-slate-900">Users</h1>
+          <p className="mt-1 text-sm text-slate-500">
+            All accounts across the platform (schools, staff, parents).
+          </p>
+        </div>
+        <button
+          onClick={() => setShowForm(true)}
+          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+        >
+          + Add user
+        </button>
+      </div>
 
       {isError && (
         <div className="mt-6 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -34,13 +57,14 @@ export function UsersPage() {
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Role</th>
+              <th className="px-4 py-3">School</th>
               <th className="px-4 py-3">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {isLoading ? (
               <tr>
-                <td colSpan={4} className="px-4 py-6 text-center text-slate-400">
+                <td colSpan={5} className="px-4 py-6 text-center text-slate-400">
                   Loading…
                 </td>
               </tr>
@@ -55,6 +79,15 @@ export function UsersPage() {
                     <span className="rounded bg-slate-100 px-2 py-0.5 text-xs uppercase tracking-wide text-slate-600">
                       {u.role}
                     </span>
+                  </td>
+                  <td className="px-4 py-3 text-slate-600">
+                    {u.schoolId ? (
+                      (schoolById.get(u.schoolId)?.name ?? (
+                        <span className="font-mono text-xs">{u.schoolId}</span>
+                      ))
+                    ) : (
+                      <span className="text-slate-400">Platform</span>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <span
@@ -71,7 +104,7 @@ export function UsersPage() {
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="px-4 py-6 text-center text-slate-400">
+                <td colSpan={5} className="px-4 py-6 text-center text-slate-400">
                   No users found.
                 </td>
               </tr>
@@ -103,6 +136,8 @@ export function UsersPage() {
           </div>
         </div>
       )}
+
+      {showForm && <UserForm onClose={() => setShowForm(false)} />}
     </div>
   );
 }

@@ -26,3 +26,21 @@ The dev server proxies `/api` to the NestJS backend on `http://localhost:3000`
 - `npm run build` — type-check + production build
 - `npm run lint` — oxlint
 - `npm run preview` — preview the production build
+
+## Changelog
+
+
+### v1.0.0 — Super Admin console (2026-07-02)
+The web app is now the Super Admin's SaaS control panel (schools run their day-to-day work through the mobile app).
+
+- [x] **Role-gated access** — non-super-admins are locked out of the console; nav trimmed to Dashboard / Schools / Users.
+- [x] **Schools page** — list with search + status filter, stats row, paginated table.
+- [x] **School creation** — "+ Add school" drawer that also creates the school's admin login in one step.
+- [x] **School detail (drill-in)** — clicking a school opens its full page: student/teacher/parent/account counts, school info, and every account under it.
+- [x] **Users page** — list + "+ Add user" form (with school selector) + a School column showing which school each account belongs to.
+- [x] **Dashboard** — retained from the existing build.
+
+### v1.0.1 — Invite-based admin onboarding (2026-07-02)
+- [x] **Forms collect name + email only** — the School and User forms no longer ask for a password; the new account is emailed a set-password link.
+- [x] **Invite link surfaced** — after creating a school/user, the drawer shows the set-password link (copyable) until email delivery is wired.
+- [x] **Public `/set-password` page** — the invited admin lands here from the link, sees their email, sets a password, and is sent to sign in.
