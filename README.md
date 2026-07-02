@@ -44,3 +44,12 @@ The web app is now the Super Admin's SaaS control panel (schools run their day-t
 - [x] **Forms collect name + email only** — the School and User forms no longer ask for a password; the new account is emailed a set-password link.
 - [x] **Invite link surfaced** — after creating a school/user, the drawer shows the set-password link (copyable) until email delivery is wired.
 - [x] **Public `/set-password` page** — the invited admin lands here from the link, sees their email, sets a password, and is sent to sign in.
+
+### v1.0.2 — Parent OTP login + Admin wired to real backend (2026-07-02)
+No web changes in this patch — backend and mobile-only changes described in the backend and Flutter READMEs.
+
+### v1.0.3 — Teacher and Parent roles wired to real backend (2026-07-02)
+No web changes in this patch — backend and mobile-only changes described in the backend and Flutter READMEs.
+
+### v1.0.4 — All portals completed per workflow diagrams (2026-07-03)
+No web changes in this patch — backend and mobile-only changes described in the backend and Flutter READMEs.
