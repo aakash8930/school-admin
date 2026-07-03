@@ -19,8 +19,8 @@ const STATUS_OPTIONS: { value: '' | SchoolStatus; label: string }[] = [
 ];
 
 const STATUS_STYLES: Record<SchoolStatus, string> = {
-  active: 'bg-green-50 text-green-700',
-  trial: 'bg-blue-50 text-blue-700',
+  active: 'bg-emerald-50 text-emerald-700',
+  trial: 'bg-sky-50 text-sky-700',
   suspended: 'bg-amber-50 text-amber-700',
   inactive: 'bg-slate-100 text-slate-500',
 };
@@ -122,8 +122,7 @@ export function SchoolsPage() {
         <table className="w-full text-left text-sm">
           <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
             <tr>
-              <th className="px-4 py-3">Code</th>
-              <th className="px-4 py-3">Name</th>
+              <th className="px-4 py-3">School</th>
               <th className="px-4 py-3">Contact</th>
               <th className="px-4 py-3">City</th>
               <th className="px-4 py-3">Status</th>
@@ -133,7 +132,7 @@ export function SchoolsPage() {
           <tbody className="divide-y divide-slate-100">
             {isLoading ? (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-slate-400">
+                <td colSpan={5} className="px-4 py-6 text-center text-slate-400">
                   Loading…
                 </td>
               </tr>
@@ -142,13 +141,22 @@ export function SchoolsPage() {
                 <tr
                   key={s._id}
                   onClick={() => navigate(`/schools/${s._id}`)}
-                  className="cursor-pointer hover:bg-slate-50"
+                  className="cursor-pointer transition hover:bg-slate-50"
                 >
-                  <td className="px-4 py-3 font-mono text-xs text-slate-600">
-                    {s.code}
-                  </td>
-                  <td className="px-4 py-3 font-medium text-slate-800">
-                    {s.name}
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-sm font-semibold text-indigo-600">
+                        {s.name[0]?.toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="font-medium text-slate-800">
+                          {s.name}
+                        </div>
+                        <div className="font-mono text-xs text-slate-400">
+                          {s.code}
+                        </div>
+                      </div>
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-slate-600">
                     {s.contactEmail ?? s.contactPhone ?? (
@@ -162,7 +170,7 @@ export function SchoolsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <span
-                      className={`rounded px-2 py-0.5 text-xs capitalize ${STATUS_STYLES[s.status]}`}
+                      className={`rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${STATUS_STYLES[s.status]}`}
                     >
                       {s.status}
                     </span>
@@ -174,7 +182,7 @@ export function SchoolsPage() {
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-slate-400">
+                <td colSpan={5} className="px-4 py-6 text-center text-slate-400">
                   No schools found.
                 </td>
               </tr>

@@ -126,10 +126,11 @@ export interface CreateSchoolInput {
   };
 }
 
-/** No password: the user is emailed a set-password invite link. */
+/** No password: staff are emailed a set-password invite link. */
 export interface CreateUserInput {
   name: string;
-  email: string;
+  /** Required for staff roles; parents onboard by phone instead. */
+  email?: string;
   phone?: string;
   role: UserRole;
   schoolId?: string;

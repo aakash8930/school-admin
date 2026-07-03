@@ -1,8 +1,16 @@
 import { useMemo, useState } from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { apiGet, errorMessage } from '../lib/api';
-import type { PaginatedResult, School, User } from '../lib/types';
+import type { PaginatedResult, School, User, UserRole } from '../lib/types';
 import { UserForm } from './UserForm';
+
+// Role pill colors — one hue per role, applied consistently everywhere.
+const ROLE_STYLES: Partial<Record<UserRole, string>> = {
+  super_admin: 'bg-slate-900 text-white',
+  admin: 'bg-indigo-50 text-indigo-700',
+  teacher: 'bg-emerald-50 text-emerald-700',
+  parent: 'bg-violet-50 text-violet-700',
+};
 
 export function UsersPage() {
   const [page, setPage] = useState(1);
@@ -55,7 +63,7 @@ export function UsersPage() {
           <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
             <tr>
               <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Email</th>
+              <th className="px-4 py-3">Email / Phone</th>
               <th className="px-4 py-3">Role</th>
               <th className="px-4 py-3">School</th>
               <th className="px-4 py-3">Status</th>
@@ -70,14 +78,27 @@ export function UsersPage() {
               </tr>
             ) : data && data.data.length > 0 ? (
               data.data.map((u) => (
-                <tr key={u._id} className="hover:bg-slate-50">
-                  <td className="px-4 py-3 font-medium text-slate-800">
-                    {u.name}
-                  </td>
-                  <td className="px-4 py-3 text-slate-600">{u.email}</td>
+                <tr key={u._id} className="transition hover:bg-slate-50">
                   <td className="px-4 py-3">
-                    <span className="rounded bg-slate-100 px-2 py-0.5 text-xs uppercase tracking-wide text-slate-600">
-                      {u.role}
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600">
+                        {u.name[0]?.toUpperCase()}
+                      </div>
+                      <span className="font-medium text-slate-800">
+                        {u.name}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-slate-600">
+                    {u.email || u.phone || '—'}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${
+                        ROLE_STYLES[u.role] ?? 'bg-slate-100 text-slate-600'
+                      }`}
+                    >
+                      {u.role.replace('_', ' ')}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-slate-600">

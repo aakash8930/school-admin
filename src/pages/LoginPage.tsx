@@ -33,52 +33,101 @@ export function LoginPage() {
   };
 
   return (
-    <div className="flex h-full items-center justify-center bg-slate-50 px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-sm"
-      >
-        <h1 className="text-xl font-semibold text-slate-900">
-          School <span className="text-indigo-600">Admin</span>
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">Sign in to continue</p>
+    <div className="flex h-full">
+      {/* Brand panel */}
+      <div className="relative hidden flex-1 flex-col justify-between overflow-hidden bg-slate-900 p-10 lg:flex">
+        <div
+          className="pointer-events-none absolute -top-32 -right-32 h-96 w-96 rounded-full bg-indigo-600/30 blur-3xl"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute -bottom-40 -left-24 h-96 w-96 rounded-full bg-violet-600/20 blur-3xl"
+          aria-hidden
+        />
 
-        {error && (
-          <div className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
-            {error}
+        <div className="relative flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-lg font-bold text-white">
+            A
           </div>
-        )}
+          <span className="text-lg font-semibold tracking-tight text-white">
+            AVAASchool
+          </span>
+        </div>
 
-        <label className="mt-6 block text-sm font-medium text-slate-700">
-          Email
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-        </label>
+        <div className="relative">
+          <h2 className="max-w-md text-3xl font-semibold leading-tight tracking-tight text-white">
+            Every preschool on your platform, managed from one place.
+          </h2>
+          <p className="mt-4 max-w-md text-sm leading-relaxed text-slate-400">
+            Onboard schools, create their admin accounts, and keep an eye on
+            every campus — while each school runs its day in the AVAASchool
+            mobile app.
+          </p>
+        </div>
 
-        <label className="mt-4 block text-sm font-medium text-slate-700">
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-        </label>
+        <div className="relative text-xs text-slate-500">
+          Multi-school management console
+        </div>
+      </div>
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="mt-6 w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:opacity-60"
-        >
-          {submitting ? 'Signing in…' : 'Sign in'}
-        </button>
-      </form>
+      {/* Sign-in form */}
+      <div className="flex flex-1 items-center justify-center bg-slate-50 px-4">
+        <form onSubmit={handleSubmit} className="w-full max-w-sm">
+          <div className="mb-8 lg:hidden">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-lg font-bold text-white">
+                A
+              </div>
+              <span className="text-lg font-semibold tracking-tight text-slate-900">
+                AVAASchool
+              </span>
+            </div>
+          </div>
+
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+            Welcome back
+          </h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Sign in to the super admin console.
+          </p>
+
+          {error && (
+            <div className="mt-5 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
+          <label className="mt-7 block text-sm font-medium text-slate-700">
+            Email
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+            />
+          </label>
+
+          <label className="mt-4 block text-sm font-medium text-slate-700">
+            Password
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+            />
+          </label>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="mt-7 w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-60"
+          >
+            {submitting ? 'Signing in…' : 'Sign in'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

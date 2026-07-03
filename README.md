@@ -53,3 +53,6 @@ No web changes in this patch — backend and mobile-only changes described in th
 
 ### v1.0.4 — All portals completed per workflow diagrams (2026-07-03)
 No web changes in this patch — backend and mobile-only changes described in the backend and Flutter READMEs.
+
+### v1.0.5 — Indian phone format, SMTP email, workflow fixes (2026-07-03)
+No web changes in this patch — backend and mobile-only changes described in the backend and Flutter READMEs.

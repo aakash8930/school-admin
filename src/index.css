@@ -13,3 +13,23 @@ body,
 body {
   margin: 0;
 }
+
+/* Slide-in drawer (Add school / Add user) */
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes drawer-in {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes drawer-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}

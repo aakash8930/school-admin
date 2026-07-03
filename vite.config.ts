@@ -6,6 +6,9 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    // Listen on all interfaces so invite links opened on a phone
+    // (same Wi-Fi/hotspot) can reach the dev server.
+    host: true,
     port: 5173,
     proxy: {
       // Proxy API calls to the NestJS backend during development.
