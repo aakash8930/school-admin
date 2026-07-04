@@ -64,3 +64,6 @@ Console restyled as a multi-school SaaS: dark sidebar with brand mark and signed
 
 
 ### v1.0.8 - No changes made in the web view.
+
+### v1.0.9 — Teacher neumorphic redesign, per-student diary, account-switch fix (2026-07-04)
+No changes made in the web view — mobile-only patch described in the Flutter README.
