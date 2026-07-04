@@ -61,3 +61,6 @@ No web changes in this patch — backend and mobile-only changes described in th
 Console restyled as a multi-school SaaS: dark sidebar with brand mark and signed-in user card, platform-overview dashboard (KPI tiles, schools-by-status strip, recent schools, quick actions), split-screen branded login, avatar+pill table styling, and animated slide-in drawers (shared `Drawer` component; backdrop fade, Esc/backdrop-click to close).
 
 ### v1.0.7 - No changes made in the web view.
+
+
+### v1.0.8 - No changes made in the web view.
