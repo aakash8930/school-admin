@@ -73,3 +73,6 @@ No web changes in this patch — backend and mobile-only changes described in th
 
 ### v1.1.3 — NO Changes on this 
 No web changes in this patch 
+
+### v1.1.4 — Socket.IO real-time chat (backend) + OTP test email (2026-07-11)
+No web changes in this patch — backend and mobile-only changes described in the backend and Flutter READMEs.

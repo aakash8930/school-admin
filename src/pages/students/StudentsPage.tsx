@@ -7,7 +7,6 @@ import type {
   StudentStats,
   StudentStatus,
 } from '../../lib/types';
-import { StudentForm } from './StudentForm';
 
 const STATUS_OPTIONS: { value: '' | StudentStatus; label: string }[] = [
   { value: '', label: 'All statuses' },
@@ -35,7 +34,6 @@ export function StudentsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<'' | StudentStatus>('');
-  const [showForm, setShowForm] = useState(false);
   const limit = 20;
 
   const params = new URLSearchParams({ page: String(page), limit: String(limit) });
@@ -56,19 +54,14 @@ export function StudentsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Students</h1>
-          <p className="mt-1 text-sm text-slate-500">
-            {stats ? `${stats.total} enrolled` : 'Manage the student roster.'}
-          </p>
-        </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-        >
-          + Add student
-        </button>
+      {/* Read-only roster: students are enrolled by their school's admin in
+          the app, never by the super admin. */}
+      <div>
+        <h1 className="text-2xl font-semibold text-slate-900">Students</h1>
+        <p className="mt-1 text-sm text-slate-500">
+          {stats ? `${stats.total} enrolled` : 'The student roster.'} Students
+          are added by each school&apos;s admin.
+        </p>
       </div>
 
       {stats && (
@@ -214,8 +207,6 @@ export function StudentsPage() {
           </div>
         </div>
       )}
-
-      {showForm && <StudentForm onClose={() => setShowForm(false)} />}
     </div>
   );
 }

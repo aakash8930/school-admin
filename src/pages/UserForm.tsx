@@ -7,15 +7,13 @@ import type {
   PaginatedResult,
   School,
   User,
-  UserRole,
 } from '../lib/types';
 
-const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
-  { value: 'admin', label: 'Admin (school account)' },
-  { value: 'teacher', label: 'Teacher' },
-  { value: 'parent', label: 'Parent' },
-];
-
+/**
+ * The super admin only creates school admin accounts. Teachers and parents
+ * are onboarded by each school itself (parents are auto-created when a
+ * student is enrolled and sign in by phone OTP).
+ */
 interface Props {
   onClose: () => void;
 }
@@ -25,16 +23,10 @@ export function UserForm({ onClose }: Props) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [role, setRole] = useState<UserRole>('admin');
   const [schoolId, setSchoolId] = useState('');
   const [invite, setInvite] = useState<{ url: string; email: string } | null>(
     null,
   );
-
-  // Every creatable role belongs to a school.
-  const needsSchool = true;
-  // Parents sign in by phone OTP — no email, no invite link.
-  const isParent = role === 'parent';
 
   const { data: schools } = useQuery({
     queryKey: ['schools', 'all'],
@@ -56,14 +48,13 @@ export function UserForm({ onClose }: Props) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const input: CreateUserInput = { name: name.trim(), role };
-    if (isParent) {
-      input.phone = `+91${phone.trim()}`;
-    } else {
-      input.email = email.trim();
-      if (phone.trim()) input.phone = `+91${phone.trim()}`;
-    }
-    if (needsSchool) input.schoolId = schoolId;
+    const input: CreateUserInput = {
+      name: name.trim(),
+      role: 'admin',
+      email: email.trim(),
+      schoolId,
+    };
+    if (phone.trim()) input.phone = `+91${phone.trim()}`;
     mutation.mutate(input);
   };
 
@@ -73,7 +64,7 @@ export function UserForm({ onClose }: Props) {
 
   if (invite) {
     return (
-      <Drawer title="User invited" onClose={onClose}>
+      <Drawer title="Admin invited" onClose={onClose}>
         <div className="space-y-4 px-6 py-5">
           <div className="rounded-lg bg-green-50 px-3 py-2 text-sm text-green-700">
             Invite sent to <span className="font-medium">{invite.email}</span>.
@@ -114,8 +105,8 @@ export function UserForm({ onClose }: Props) {
 
   return (
     <Drawer
-      title="New user"
-      subtitle="Admins and teachers get an email invite; parents sign in by phone OTP."
+      title="New school admin"
+      subtitle="A set-password invite is emailed. Teachers and parents are added by their school."
       onClose={onClose}
     >
         <form
@@ -140,40 +131,18 @@ export function UserForm({ onClose }: Props) {
             </label>
 
             <label className={label}>
-              Role
-              <select
+              Email
+              <input
+                type="email"
                 className={field}
-                value={role}
-                onChange={(e) => setRole(e.target.value as UserRole)}
-              >
-                {ROLE_OPTIONS.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-              <p className="mt-1 text-xs text-slate-500">
-                {isParent
-                  ? 'Parents sign in on the mobile app with a phone OTP — no email needed.'
-                  : 'A set-password invite is emailed to activate the account.'}
-              </p>
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </label>
 
-            {!isParent && (
-              <label className={label}>
-                Email
-                <input
-                  type="email"
-                  className={field}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </label>
-            )}
-
             <label className={label}>
-              Mobile number{isParent ? '' : ' (optional)'}
+              Mobile number (optional)
               <div className="mt-1 flex">
                 <span className="inline-flex items-center rounded-l-lg border border-r-0 border-slate-300 bg-slate-50 px-3 text-sm text-slate-500">
                   +91
@@ -188,31 +157,28 @@ export function UserForm({ onClose }: Props) {
                   inputMode="numeric"
                   pattern="[6-9][0-9]{9}"
                   title="10-digit Indian mobile number"
-                  required={isParent}
                 />
               </div>
             </label>
 
-            {needsSchool && (
-              <label className={label}>
-                School
-                <select
-                  className={field}
-                  value={schoolId}
-                  onChange={(e) => setSchoolId(e.target.value)}
-                  required
-                >
-                  <option value="" disabled>
-                    Select a school…
+            <label className={label}>
+              School
+              <select
+                className={field}
+                value={schoolId}
+                onChange={(e) => setSchoolId(e.target.value)}
+                required
+              >
+                <option value="" disabled>
+                  Select a school…
+                </option>
+                {schools?.data.map((s) => (
+                  <option key={s._id} value={s._id}>
+                    {s.name} ({s.code})
                   </option>
-                  {schools?.data.map((s) => (
-                    <option key={s._id} value={s._id}>
-                      {s.name} ({s.code})
-                    </option>
-                  ))}
-                </select>
-              </label>
-            )}
+                ))}
+              </select>
+            </label>
           </div>
 
           <div className="mt-auto flex justify-end gap-2 border-t border-slate-200 px-6 py-4">
@@ -228,7 +194,7 @@ export function UserForm({ onClose }: Props) {
               disabled={mutation.isPending}
               className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
             >
-              {mutation.isPending ? 'Saving…' : 'Create user'}
+              {mutation.isPending ? 'Saving…' : 'Create admin'}
             </button>
           </div>
         </form>
