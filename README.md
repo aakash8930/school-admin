@@ -76,3 +76,18 @@ No web changes in this patch
 
 ### v1.1.4 — Socket.IO real-time chat (backend) + OTP test email (2026-07-11)
 No web changes in this patch — backend and mobile-only changes described in the backend and Flutter READMEs.
+
+### v1.1.5 — Token refresh fixed (2026-07-13)
+The console was affected by the same session-expiry bug as the mobile app: `POST /auth/refresh` was guarded by the access-token guard, so once the 15-minute access token expired the refresh call returned 401, `tokenStore.clear()` ran, and the admin was bounced to the login screen mid-session. The fix is server-side (see the backend README) — the console needed only one change.
+
+- [x] **`src/lib/api.ts`** — `refreshTokens()` no longer sends `Authorization: Bearer <expired access token>` with the refresh request. The refresh token in the body is now the only credential the endpoint uses. The comment claiming "backend guards /auth/refresh with JWT" is gone, because it no longer does.
+
+### v1.1.6 — The session survives a page reload (2026-07-13)
+v1.1.5 fixed refresh *during* a session; reloading the page still logged you out. `AuthProvider` treated an expired access token as "signed out" on first paint, so any reload more than 15 minutes after login bounced to `/login` — even though a perfectly good refresh token was sitting in `localStorage`. A session now lasts until the admin signs out (see backend v1.1.6 for the server side).
+
+- [x] **`src/auth/AuthProvider.tsx`** — restores the session on load: an expired access token is no longer a logout, it's a cue to trade the refresh token in first. New `isRestoring` flag while that call is in flight.
+- [x] **`src/components/ProtectedRoute.tsx`** — shows a spinner while `isRestoring` instead of redirecting, so the restore isn't raced to `/login`.
+- [x] **`src/pages/LoginPage.tsx`** — an already-signed-in admin landing here (bookmark, back button) is sent home rather than asked to sign in again.
+- [x] **`src/lib/api.ts`** — the 401-retry path's refresh is now the exported, de-duplicated `refreshSession()`, shared with the boot-time restore so a burst of 401s can't rotate the token twice.
+- [x] **Logout ends only this browser** — `POST /auth/logout` now carries the refresh token, so the admin's phone stays signed in.
+- [x] **Note:** everyone is signed out **once** on deploy — pre-v1.1.6 refresh tokens have no device `sid` and are rejected. Normal behaviour resumes after that login.

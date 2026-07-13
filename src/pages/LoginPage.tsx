@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 import { errorMessage } from '../lib/api';
 
@@ -8,7 +8,7 @@ interface LocationState {
 }
 
 export function LoginPage() {
-  const { login } = useAuth();
+  const { login, isAuthenticated, isRestoring } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as LocationState)?.from?.pathname ?? '/';
@@ -31,6 +31,11 @@ export function LoginPage() {
       setSubmitting(false);
     }
   };
+
+  // An already-signed-in user landing here (bookmark, back button) goes home
+  // rather than being asked to sign in again.
+  if (isRestoring) return null;
+  if (isAuthenticated) return <Navigate to={from} replace />;
 
   return (
     <div className="flex h-full">

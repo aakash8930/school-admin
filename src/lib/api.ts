@@ -27,14 +27,21 @@ export function setOnAuthLost(cb: () => void): void {
 
 let refreshing: Promise<AuthTokens> | null = null;
 
+/** Trades the stored refresh token for a fresh pair. Concurrent callers share
+ *  one in-flight request, so a burst of 401s can't rotate the token twice. */
+export function refreshSession(): Promise<AuthTokens> {
+  refreshing ??= refreshTokens().finally(() => {
+    refreshing = null;
+  });
+  return refreshing;
+}
+
 async function refreshTokens(): Promise<AuthTokens> {
   const refreshToken = tokenStore.refresh;
   if (!refreshToken) throw new Error('No refresh token');
-  // Uses the access token in the header (backend guards /auth/refresh with JWT).
   const res = await axios.post<ApiEnvelope<AuthTokens>>(
     `${baseURL}/auth/refresh`,
     { refreshToken },
-    { headers: { Authorization: `Bearer ${tokenStore.access ?? ''}` } },
   );
   tokenStore.set(res.data.data);
   return res.data.data;
@@ -52,15 +59,12 @@ http.interceptors.response.use(
     if (error.response?.status === 401 && !original._retried && !isAuthCall) {
       original._retried = true;
       try {
-        refreshing ??= refreshTokens();
-        const tokens = await refreshing;
+        const tokens = await refreshSession();
         original.headers.Authorization = `Bearer ${tokens.accessToken}`;
         return http(original);
       } catch {
         tokenStore.clear();
         onAuthLost?.();
-      } finally {
-        refreshing = null;
       }
     }
     return Promise.reject(error);

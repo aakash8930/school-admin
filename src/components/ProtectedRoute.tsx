@@ -2,8 +2,21 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 
 export function ProtectedRoute() {
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, isRestoring, user, logout } = useAuth();
   const location = useLocation();
+
+  // Don't bounce to /login while the stored session is still being restored.
+  if (isRestoring) {
+    return (
+      <div className="flex h-full items-center justify-center bg-slate-50">
+        <div
+          className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600"
+          role="status"
+          aria-label="Loading"
+        />
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location }} />;
