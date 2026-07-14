@@ -91,3 +91,7 @@ v1.1.5 fixed refresh *during* a session; reloading the page still logged you out
 - [x] **`src/lib/api.ts`** — the 401-retry path's refresh is now the exported, de-duplicated `refreshSession()`, shared with the boot-time restore so a burst of 401s can't rotate the token twice.
 - [x] **Logout ends only this browser** — `POST /auth/logout` now carries the refresh token, so the admin's phone stays signed in.
 - [x] **Note:** everyone is signed out **once** on deploy — pre-v1.1.6 refresh tokens have no device `sid` and are rejected. Normal behaviour resumes after that login.
+
+
+### v1.1.7 — NO Changes on this 
+No web changes in this patch 
